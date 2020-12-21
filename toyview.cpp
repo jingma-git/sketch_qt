@@ -1,15 +1,15 @@
 #include "toyview.h"
 #include <QVector4D>
 
-
 ToyView::ToyView()
-    :id(-1),
-     isInit(false),
-     isFilled(false)
+    : id(-1),
+      isInit(false),
+      isFilled(false)
 {
 }
 
-ToyView::ToyView(SketchLine sketchline, int id_){
+ToyView::ToyView(SketchLine sketchline, int id_)
+{
     id = id_;
     isInit = false;
     isFilled = false;
@@ -18,21 +18,23 @@ ToyView::ToyView(SketchLine sketchline, int id_){
     mvp.setToIdentity();
 }
 
-
-ToyView::~ToyView(){
+ToyView::~ToyView()
+{
     line_vbo.destroy();
     line_vao.destroy();
 }
 
-void ToyView::init(){
+void ToyView::init()
+{
     //------------------------------ Initialize shader program---------------------------------------
     line_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shader_sketch.vert");
     line_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shader_sketch.frag");
-    if(!line_shaderProgram.link()){
+    if (!line_shaderProgram.link())
+    {
         qDebug() << "Failed to link line shader program\n";
     }
 
-    QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     //------------------------------ Get shader location ---------------------------------------
     line_shaderProgram.bind();
     vertex_loc = line_shaderProgram.attributeLocation("vertex");
@@ -59,29 +61,34 @@ void ToyView::init(){
     isInit = true;
 }
 
-
-void ToyView::draw_mesh(){
+void ToyView::draw_mesh()
+{
 }
 
-
-void ToyView::bind_line(){
+void ToyView::bind_line()
+{
     line_vbo.bind();
     line_vbo.allocate(m_sketchline.data(), m_sketchline.size() * sizeof(GLVertex));
     line_vbo.release();
     isFilled = true;
 }
 
-void ToyView::draw_line(){
-    if(m_sketchline.size()<2) return;
+void ToyView::draw_line()
+{
+    if (m_sketchline.size() < 2)
+        return;
 
-    if(!isInit){
+    if (!isInit)
+    {
         init();
     }
-    if(!isFilled){
+    if (!isFilled || isVboChanged)
+    {
         bind_line();
+        isVboChanged = false;
     }
 
-    QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
     line_shaderProgram.bind();
     line_shaderProgram.setUniformValue(mvp_loc, mvp);

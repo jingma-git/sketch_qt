@@ -20,16 +20,15 @@ private:
     Q_DISABLE_COPY(OpenGLWidget)
 
 public:
-    OpenGLWidget(QWidget * parent = nullptr);
+    OpenGLWidget(QWidget *parent = nullptr);
     ~OpenGLWidget();
 
 private:
-    void mousePressEvent(QMouseEvent * event);
-    void mouseMoveEvent(QMouseEvent * event);
-    void mouseReleaseEvent(QMouseEvent * event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
@@ -38,7 +37,7 @@ private:
 private:
     // Input mouse data
     ToyView m_curView;
-    std::vector<ToyView*> m_toyViews;
+    std::vector<ToyView *> m_toyViews;
 
     QMatrix4x4 m_mvp;
 };
